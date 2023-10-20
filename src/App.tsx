@@ -23,7 +23,7 @@ const App: FC = () => {
         <Tab label="Voir la liste" value={2} />
       </Tabs>
       {tabValue === 0 ? (
-        <>TODO: Show a random cocktail</>
+        <RandomCocktail/>
       ) : tabValue === 1 ? (
         <>TODO: Find a cocktail by ingredient</>
       ) : (
