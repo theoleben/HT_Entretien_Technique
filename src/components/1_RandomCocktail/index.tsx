@@ -5,9 +5,13 @@ import { Cocktail } from '../../types/cocktails'
 import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
 
+interface GetCocktailResponse {
+  drinks: Cocktail[]
+}
+
 const RandomCocktail: FC = () => {
   /* TODO: get cocktail data from API */
-  const cocktail: Cocktail | undefined = undefined
+  // const cocktail: Cocktail | undefined = undefined
   // console.log('RandomCocktail')
 
   const [cocktailS, setCocktailS] = useState<Cocktail>()
@@ -27,29 +31,44 @@ const RandomCocktail: FC = () => {
   //   strIngredient5: 'Ing5',
   // }
 
-  const fetchIngredients = useCallback(async () => {
+  const fetchCocktail = useCallback(async () => {
     try {
-      const response = await API.get(
+      const response = await API.get<GetCocktailResponse>(
         'https://www.thecocktaildb.com/api/json/v1/1/random.php',
       )
-      // console.log(response.data)
-      // console.log(response.data.drinks[0])
+      // console.log(response)
+      const { drinks } = response.data
+      // console.log(drinks)
 
-      let obj: Cocktail = {
-        idDrink: response.data.drinks[0].idDrink,
-        strDrink: response.data.drinks[0].strDrink,
-        strInstructions: response.data.drinks[0].strInstructions,
-        strDrinkThumb: response.data.drinks[0].strDrinkThumb, // url of the cocktail image
-        strIngredient1: response.data.drinks[0].strIngredient1,
-        strIngredient2: response.data.drinks[0].strIngredient2,
-        strIngredient3: response.data.drinks[0].strIngredient3,
-        strIngredient4: response.data.drinks[0].strIngredient4,
-        strIngredient5: response.data.drinks[0].strIngredient5,
+      let obj = drinks[0]
+
+      const {
+        idDrink,
+        strDrink,
+        strInstructions,
+        strDrinkThumb,
+        strIngredient1,
+        strIngredient2,
+        strIngredient3,
+        strIngredient4,
+        strIngredient5,
+      } = obj
+
+      let objFormatted: Cocktail = {
+        idDrink,
+        strDrink,
+        strInstructions,
+        strDrinkThumb,
+        strIngredient1,
+        strIngredient2,
+        strIngredient3,
+        strIngredient4,
+        strIngredient5,
       }
 
-      // console.log(obj)
+      // console.log(objFormatted)
 
-      setCocktailS(obj)
+      setCocktailS(objFormatted)
     } catch (error) {
       // console.log(error);
     }
@@ -57,13 +76,13 @@ const RandomCocktail: FC = () => {
 
   useEffect(() => {
     // console.log('useEffect')
-    fetchIngredients()
-  }, [fetchIngredients])
+    fetchCocktail()
+  }, [fetchCocktail])
 
   return (
     <Stack direction={'column'} alignItems="center" spacing={4}>
       <Typography variant="body1">En panne d'inspiration ?</Typography>
-      <Button variant={'outlined'} color="secondary" onClick={fetchIngredients}>
+      <Button variant={'outlined'} color="secondary" onClick={fetchCocktail}>
         Trouve moi un cocktail
       </Button>
       {cocktailS && <CocktailCard cocktail={cocktailS} />}
