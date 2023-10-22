@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect, useState } from 'react'
+import { FC, /* Fragment, useCallback, useEffect,*/ useState } from 'react'
 import {
   Button,
   Card,
@@ -8,8 +8,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { Cocktail } from '../../types/cocktails'
-import CocktailCard from '../CocktailCard'
+// import { Cocktail } from '../../types/cocktails'
+// import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
 
 interface IProps {
@@ -21,50 +21,86 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
 
   const [filter, setFilter] = useState<string>()
   const [results, setResults] = useState<Array<{ name: string; img: string }>>()
+  // const [checked, setChecked] = useState<boolean>(false)
 
-  const fetchCocktailsByIngredient = useCallback(async (filter: string) => {
+  // Solution 1 - When the filter changed, we automatically fetch data
+  // const fetchCocktailsByIngredient = useCallback(async (filter: string) => {
+  // Solution 2 - When we clcik on the button validate
+  const fetchCocktailsByIngredient = async () => {
     // console.log('fetchCocktailsByIngredient')
     // console.log(filter)
-    try {
-      // www.thecocktaildb.com/api/json/v1/1/filter.php?i=Gin
-      const response = await API.get(
-        `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${filter}`,
-      )
-      // console.log(response)
-      const { drinks } = response.data
-      // console.log(drinks)
-
-      let res: Array<{ name: string; img: string }> = []
-
-      drinks.forEach((element: any) => {
-        res.push({ name: element.strDrink, img: element.strDrinkThumb })
-      })
-
-      // console.log(res)
-      setResults(res)
-    } catch (error) {
-      // console.log(error);
-    }
-  }, [])
-
-  useEffect(() => {
-    // console.log('useEffect')
-    // console.log(filter)
-
     if (filter !== undefined) {
-      // console.log(filter)
-      fetchCocktailsByIngredient(filter)
+      try {
+        // www.thecocktaildb.com/api/json/v1/1/filter.php?i=Gin
+        const response = await API.get(
+          `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${filter}`,
+        )
+        // console.log(response.data)
+        const { drinks } = response.data
+        // console.log(drinks)
+
+        let res: Array<{ name: string; img: string }> = []
+
+        drinks.forEach((element: any) => {
+          res.push({ name: element.strDrink, img: element.strDrinkThumb })
+        })
+
+        // console.log(res)
+        setResults(res)
+      } catch (error) {
+        // console.log(error);
+      }
+    } else {
+      // console.log("can't fetch data : filter is undefined")
     }
-  }, [filter])
+    // Solution 1 - When the filter changed, we automatically fetch data
+    // }, [])
+    // Solution 2 - When we click on the button validate
+  }
+
+  // // Solution 1 - When the filter changed, we automatically fetch data
+  // useEffect(() => {
+  //   // console.log('useEffect')
+  //   // console.log(filter)
+
+  //   if (filter !== undefined) {
+  //     // console.log(filter)
+  //     fetchCocktailsByIngredient(filter)
+  //   }
+  // }, [filter])
 
   // console.log(results)
+
+  const handleCheck = (
+    _event: React.SyntheticEvent<Element, Event>,
+    ingredient: string,
+    checked: boolean,
+  ) => {
+    // console.log(event.target)
+    // console.log(ingredient)
+    // console.log(checked)
+
+    if (checked) {
+      // console.log(ingredient)
+      // setChecked(checked)
+      setFilter(ingredient)
+    } else {
+      setFilter(undefined)
+      setResults([])
+      // setChecked(false)
+    }
+  }
 
   return (
     <Stack direction={'column'} alignItems="center" spacing={4}>
       <Typography variant="body1">
         Entrez les informations pour trouver un cocktail selon vos goûts
       </Typography>
-      <Button variant={'outlined'} color="secondary">
+      <Button
+        variant={'outlined'}
+        color="secondary"
+        onClick={fetchCocktailsByIngredient}
+      >
         Valider
       </Button>
 
@@ -81,9 +117,12 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
                     control={<Checkbox />}
                     label={ingredient}
                     checked={undefined}
-                    onClick={() => {
-                      setFilter(ingredient)
-                    }}
+                    // onClick={() => {
+                    //   setFilter(ingredient)
+                    // }}
+                    onChange={(event, checked) =>
+                      handleCheck(event, ingredient, checked)
+                    }
                   />
                 )
               })}
@@ -94,15 +133,32 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
       {/* List of cocktails */}
       <Stack direction={'row'} spacing={2}>
         {/* TODO: Show list of cocktail containing selected ingredient */}
-        {results &&
-          results.map((element, index) => {
-            return (
-              <Fragment key={index}>
-                <p>{element.name}</p>
-                <img src={element.img} style={{ width: 200, height: 200 }} />
-              </Fragment>
-            )
-          })}
+        <div
+          style={{
+            // width: '100%',
+            // backgroundColor: 'blue',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          {results &&
+            results.map((element, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    // backgroundColor: 'pink',
+                    margin: '5px',
+                    border: '1px solid black',
+                  }}
+                >
+                  <p>{element.name}</p>
+                  <img src={element.img} style={{ width: 200, height: 200 }} />
+                </div>
+              )
+            })}
+        </div>
       </Stack>
     </Stack>
   )

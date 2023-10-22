@@ -1,13 +1,14 @@
 import { FC } from 'react'
-import { Button, Card, Stack, Typography } from '@mui/material'
+import { /*Button,*/ Card, Stack, Typography } from '@mui/material'
 import { Cocktail } from '../../types/cocktails'
-import { useAppDispatch } from '../../redux/hooks'
+// import { useAppDispatch } from '../../redux/hooks'
 
 interface IProps {
   cocktail: Cocktail
 }
 
 const CocktailCard: FC<IProps> = ({ cocktail }) => {
+  // const dispatch = useAppDispatch()
   // console.log(cocktail)
 
   let fruits: string[] = [

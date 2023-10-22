@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from 'react'
+import { FC /*useEffect, useState*/ } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
-import CocktailCard from '../CocktailCard'
-import { useAppSelector } from '../../redux/hooks'
-import { Cocktails } from '../../types/cocktails'
+// import CocktailCard from '../CocktailCard'
+// import { useAppSelector } from '../../redux/hooks'
+// import { Cocktails } from '../../types/cocktails'
 
 const FavoriteList: FC = () => {
   const showIngredientList = (): void => {
