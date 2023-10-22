@@ -8,10 +8,9 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-// import { Cocktail } from '../../types/cocktails'
 // import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
-import { Cocktail, Cocktails } from '../../types/cocktails'
+import { Cocktail /*, Cocktails*/ } from '../../types/cocktails'
 import CocktailCard from '../CocktailCard'
 
 interface IProps {
@@ -23,7 +22,7 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
 
   const [filter, setFilter] = useState<string>()
   // const [results, setResults] = useState<Array<{ name: string; img: string }>>()
-  const [results, setResults] = useState<Array<Cocktail>>()
+  const [results, setResults] = useState<Array<Cocktail>>([])
 
   // Solution 1 - When the filter changed, we automatically fetch data
   // const fetchCocktailsByIngredient = useCallback(async (filter: string) => {
@@ -181,6 +180,11 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
         </Card>
       </Stack>
 
+      {results && (
+        <Typography variant="h6">
+          Nombre de cocktails : {results?.length}
+        </Typography>
+      )}
       {/* List of cocktails */}
       <Stack direction={'row'} spacing={2}>
         {/* TODO: Show list of cocktail containing selected ingredient */}

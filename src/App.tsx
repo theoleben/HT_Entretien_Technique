@@ -57,7 +57,8 @@ const App: FC = () => {
         // <>TODO: Find a cocktail by ingredient</>
         <FindCocktail ingredients={ingredients} />
       ) : (
-        <>TODO: My list of favorite cocktails</>
+        // <>TODO: My list of favorite cocktails</>
+        <FavoriteList />
       )}
     </Stack>
   )
