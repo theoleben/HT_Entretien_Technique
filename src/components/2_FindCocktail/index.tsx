@@ -11,6 +11,8 @@ import {
 // import { Cocktail } from '../../types/cocktails'
 // import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
+import { Cocktail, Cocktails } from '../../types/cocktails'
+import CocktailCard from '../CocktailCard'
 
 interface IProps {
   ingredients?: string[]
@@ -20,8 +22,8 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
   // console.log('ingredients:', ingredients)
 
   const [filter, setFilter] = useState<string>()
-  const [results, setResults] = useState<Array<{ name: string; img: string }>>()
-  // const [checked, setChecked] = useState<boolean>(false)
+  // const [results, setResults] = useState<Array<{ name: string; img: string }>>()
+  const [results, setResults] = useState<Array<Cocktail>>()
 
   // Solution 1 - When the filter changed, we automatically fetch data
   // const fetchCocktailsByIngredient = useCallback(async (filter: string) => {
@@ -39,14 +41,66 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
         const { drinks } = response.data
         // console.log(drinks)
 
+        // Solution 1 - Custom component with <{ name: string; img: string }>
         let res: Array<{ name: string; img: string }> = []
 
         drinks.forEach((element: any) => {
           res.push({ name: element.strDrink, img: element.strDrinkThumb })
         })
 
+        // Solution 2 - CocktailCard component
+        let requests = drinks.map(async (element: Cocktail) => {
+          // console.log(element)
+          return await API.get(
+            `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${element.idDrink}`,
+          )
+        })
+
+        let formattedData = []
+        Promise.all(requests).then((responses) => {
+          // console.log(responses)
+
+          // const { drinks } = responses.data
+          // console.log(drinks)
+
+          formattedData = responses.map((drink) => {
+            const { drinks } = drink.data
+            // console.log(drinks)
+            const obj = drinks[0]
+
+            const {
+              idDrink,
+              strDrink,
+              strInstructions,
+              strDrinkThumb,
+              strIngredient1,
+              strIngredient2,
+              strIngredient3,
+              strIngredient4,
+              strIngredient5,
+            } = obj
+
+            let objFormatted: Cocktail = {
+              idDrink,
+              strDrink,
+              strInstructions,
+              strDrinkThumb,
+              strIngredient1,
+              strIngredient2,
+              strIngredient3,
+              strIngredient4,
+              strIngredient5,
+            }
+
+            return objFormatted
+          })
+
+          // console.log(formattedData)
+          setResults(formattedData)
+        })
+
         // console.log(res)
-        setResults(res)
+        // setResults(res)
       } catch (error) {
         // console.log(error);
       }
@@ -78,16 +132,13 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
   ) => {
     // console.log(event.target)
     // console.log(ingredient)
-    // console.log(checked)
 
     if (checked) {
       // console.log(ingredient)
-      // setChecked(checked)
       setFilter(ingredient)
     } else {
       setFilter(undefined)
       setResults([])
-      // setChecked(false)
     }
   }
 
@@ -144,17 +195,23 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
         >
           {results &&
             results.map((element, index) => {
+              // console.log(element)
               return (
-                <div
-                  key={index}
-                  style={{
-                    // backgroundColor: 'pink',
-                    margin: '5px',
-                    border: '1px solid black',
-                  }}
-                >
-                  <p>{element.name}</p>
-                  <img src={element.img} style={{ width: 200, height: 200 }} />
+                // Initial
+                // <div
+                //   key={index}
+                //   style={{
+                //     // backgroundColor: 'pink',
+                //     margin: '5px',
+                //     border: '1px solid black',
+                //   }}
+                // >
+                //   <p>{element.name}</p>
+                //   <img src={element.img} style={{ width: 200, height: 200 }} />
+                // </div>
+                // Bonus
+                <div style={{ margin: '10px' }} key={index}>
+                  <CocktailCard cocktail={element} />
                 </div>
               )
             })}

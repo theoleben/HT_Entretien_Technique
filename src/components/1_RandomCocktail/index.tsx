@@ -1,13 +1,9 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 // import { useAppSelector } from '../../redux/hooks'
-import { Cocktail } from '../../types/cocktails'
+import { Cocktail, Cocktails } from '../../types/cocktails'
 import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
-
-interface GetCocktailResponse {
-  drinks: Cocktail[]
-}
 
 const RandomCocktail: FC = () => {
   /* TODO: get cocktail data from API */
@@ -33,7 +29,7 @@ const RandomCocktail: FC = () => {
 
   const fetchCocktail = useCallback(async () => {
     try {
-      const response = await API.get<GetCocktailResponse>(
+      const response = await API.get<Cocktails>(
         'https://www.thecocktaildb.com/api/json/v1/1/random.php',
       )
       // console.log(response)
