@@ -1,4 +1,8 @@
-import { FC, /* Fragment, useCallback, useEffect,*/ useState } from 'react'
+import {
+  ChangeEvent,
+  FC,
+  /* Fragment, useCallback, useEffect,*/ useState,
+} from 'react'
 import {
   Button,
   Card,
@@ -7,11 +11,21 @@ import {
   FormGroup,
   Stack,
   Typography,
+  RadioGroup,
+  Radio,
 } from '@mui/material'
 // import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
-import { Cocktail /*, Cocktails*/ } from '../../types/cocktails'
+import {
+  Cocktail /*, Cocktails*/,
+  CocktailAlcohol,
+} from '../../types/cocktails'
 import CocktailCard from '../CocktailCard'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import {
+  cocktailFilteredByIngredients,
+  selectAllFilteredCocktails,
+} from '../../redux/slices/cocktailsSlice'
 
 interface IProps {
   ingredients?: string[]
@@ -20,9 +34,16 @@ interface IProps {
 const FindCocktail: FC<IProps> = ({ ingredients }) => {
   // console.log('ingredients:', ingredients)
 
+  const dispatch = useAppDispatch()
+
   const [filter, setFilter] = useState<string>()
   // const [results, setResults] = useState<Array<{ name: string; img: string }>>()
-  const [results, setResults] = useState<Array<Cocktail>>([])
+  const [results, setResults] = useState<Array<CocktailAlcohol>>([])
+  const [selectedValue, setSelectedValue] = useState<string>('')
+
+  const filteredCocktails = useAppSelector(selectAllFilteredCocktails)
+  // console.log('filteredCocktails:', filteredCocktails)
+  // console.log('results:', results)
 
   // Solution 1 - When the filter changed, we automatically fetch data
   // const fetchCocktailsByIngredient = useCallback(async (filter: string) => {
@@ -66,6 +87,7 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
             const { drinks } = drink.data
             // console.log(drinks)
             const obj = drinks[0]
+            // console.log(obj)
 
             const {
               idDrink,
@@ -77,9 +99,10 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
               strIngredient3,
               strIngredient4,
               strIngredient5,
+              strAlcoholic,
             } = obj
 
-            let objFormatted: Cocktail = {
+            let objFormatted: CocktailAlcohol = {
               idDrink,
               strDrink,
               strInstructions,
@@ -89,13 +112,34 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
               strIngredient3,
               strIngredient4,
               strIngredient5,
+              strAlcoholic,
             }
 
             return objFormatted
           })
 
-          // console.log(formattedData)
-          setResults(formattedData)
+          // Way to manage filter cocktail with or without alcohol
+          dispatch(cocktailFilteredByIngredients(formattedData))
+
+          if (selectedValue === 'option_with_alcohol') {
+            // console.log('Alcool')
+            const data = formattedData.filter(
+              (element) => element.strAlcoholic === 'Alcoholic',
+            )
+            // console.log('data:', data)
+            setResults(data)
+          } else if (selectedValue === 'option_without_alcohol') {
+            // console.log('No alcool')
+            const data = formattedData.filter(
+              (element) => element.strAlcoholic !== 'Alcoholic',
+            )
+            // console.log('data:', data)
+            setResults(data)
+          } else {
+            // console.log(formattedData)
+            // console.log('Nothing preselected')
+            setResults(formattedData)
+          }
         })
 
         // console.log(res)
@@ -141,6 +185,32 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
     }
   }
 
+  const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.value)
+    setSelectedValue(event.target.value)
+    // console.log('filteredCocktails in handle:', filteredCocktails)
+
+    if (filteredCocktails.length > 0) {
+      if (event.target.value === 'option_with_alcohol') {
+        // console.log('Alcool')
+        const data = filteredCocktails.filter(
+          (element) => element.strAlcoholic === 'Alcoholic',
+        )
+        // console.log('data:', data)
+        setResults(data)
+      } else if (event.target.value === 'option_without_alcohol') {
+        // console.log('No alcool')
+        const data = filteredCocktails.filter(
+          (element) => element.strAlcoholic !== 'Alcoholic',
+        )
+        // console.log('data:', data)
+        setResults(data)
+      }
+    } else {
+      // console.log('There is no data to filter')
+    }
+  }
+
   return (
     <Stack direction={'column'} alignItems="center" spacing={4}>
       <Typography variant="body1">
@@ -176,6 +246,28 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
                   />
                 )
               })}
+          </FormGroup>
+        </Card>
+        <Card style={{ padding: '10px', maxHeight: '300px', overflow: 'auto' }}>
+          <Typography variant="h6">Avec ou sans alcool ?</Typography>
+          <FormGroup>
+            <RadioGroup
+              aria-label="options"
+              name="options"
+              value={selectedValue}
+              onChange={handleRadioChange}
+            >
+              <FormControlLabel
+                value="option_with_alcohol"
+                control={<Radio />}
+                label="Avec"
+              />
+              <FormControlLabel
+                value="option_without_alcohol"
+                control={<Radio />}
+                label="Sans"
+              />
+            </RadioGroup>
           </FormGroup>
         </Card>
       </Stack>

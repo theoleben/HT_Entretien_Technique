@@ -4,11 +4,12 @@ import {
   createSelector,
   createSlice,
 } from '@reduxjs/toolkit'
-import { Cocktail } from '../../types/cocktails'
+import { Cocktail, CocktailAlcohol } from '../../types/cocktails'
 
 // // Type definition of the cocktail slice state
 export interface ICocktailState {
   cocktails: Array<Cocktail>
+  filteredCocktailByIngredients: Array<CocktailAlcohol>
   // Useless - we can manage ingredients in the selector
   // ingredients: Array<string>
 }
@@ -16,6 +17,7 @@ export interface ICocktailState {
 // // Initial state
 const initialState: ICocktailState = {
   cocktails: [],
+  filteredCocktailByIngredients: [],
   // Useless - we can manage ingredients in the selector
   // ingredients: [],
 }
@@ -81,6 +83,10 @@ const cocktailSlice = createSlice({
       // console.log(newArr[0].idDrink)
       state.cocktails = newArr
     },
+    cocktailFilteredByIngredients(state, action) {
+      // console.log(action.payload)
+      state.filteredCocktailByIngredients = action.payload
+    },
   },
   extraReducers(builder) {
     builder.addCase(getRandomCocktail.fulfilled, (state, action) => {
@@ -96,7 +102,8 @@ export default cocktailSlice.reducer
 export const cocktailAction = { getRandomCocktail }
 
 // Actions
-export const { cocktailAdded, cocktailRemoved } = cocktailSlice.actions
+export const { cocktailAdded, cocktailRemoved, cocktailFilteredByIngredients } =
+  cocktailSlice.actions
 
 // Selector
 export const selectAllCocktails = (state: ICocktailState) => {
@@ -126,3 +133,8 @@ export const selectAllIngredients = createSelector(
     return ingredients.sort()
   },
 )
+
+export const selectAllFilteredCocktails = (state: ICocktailState) => {
+  // console.log(state)
+  return state.filteredCocktailByIngredients
+}
