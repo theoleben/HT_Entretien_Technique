@@ -1,4 +1,4 @@
-import { FC /*useEffect, useState*/ } from 'react'
+import { FC /*useEffect,*/, useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 // import { Cocktail } from '../../types/cocktails'
 // import CocktailCard from '../CocktailCard'
@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
   cocktailRemoved,
   selectAllCocktails,
+  // selectAllIngredientsFavCocktails,
+  selectAllIngredients,
 } from '../../redux/slices/cocktailsSlice'
 // import { Cocktails } from '../../types/cocktails'
 
@@ -16,15 +18,23 @@ import {
 
 // const FavoriteList: FC<IProps> = ({ cocktails }) => {
 const FavoriteList: FC = () => {
-  const showIngredientList = (): void => {
-    // TODO: Fill the function
-  }
+  const dispatch = useAppDispatch()
+  const [ingredientsFavList, setIngredientsFavList] = useState<string[]>([])
 
   // console.log(cocktails)
 
-  const dispatch = useAppDispatch()
   const cocktailsList = useAppSelector(selectAllCocktails)
+  // const ingredientsList = useAppSelector(selectAllIngredientsFavCocktails)
+  const ingredientsList = useAppSelector(selectAllIngredients)
   // console.log(cocktailsList)
+  // console.log(ingredientsList)
+  // console.log(typeof ingredientsList)
+  // console.log(ingredientsList.values())
+
+  const showIngredientList = (): void => {
+    // TODO: Fill the function
+    setIngredientsFavList([...ingredientsList])
+  }
 
   return (
     <Stack direction={'column'} alignItems="center" spacing={4}>
@@ -70,6 +80,14 @@ const FavoriteList: FC = () => {
         </Button>
         <Stack direction={'column'}>
           {/* TODO: Show list of ingredients */}
+          {ingredientsFavList && (
+            <ul>
+              {ingredientsFavList.map((element, index) => {
+                // console.log(element)
+                return <p key={index}>{element}</p>
+              })}
+            </ul>
+          )}
         </Stack>
       </Stack>
     </Stack>
