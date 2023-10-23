@@ -1,31 +1,13 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
-// import { useAppSelector } from '../../redux/hooks'
 import { Cocktail, Cocktails } from '../../types/cocktails'
 import CocktailCard from '../CocktailCard'
 import API from '../../client/api'
 
 const RandomCocktail: FC = () => {
   /* TODO: get cocktail data from API */
-  // const cocktail: Cocktail | undefined = undefined
-  // console.log('RandomCocktail')
 
   const [cocktailS, setCocktailS] = useState<Cocktail>()
-  // console.log('cocktailS:', cocktailS);
-
-  // Hardcoded
-  // let cocktail2 = {
-  //   idDrink: '1',
-  //   strDrink: 'Test',
-  //   strInstructions: 'Mixer les indrédients',
-  //   strDrinkThumb: 'fake_url', // url of the cocktail image
-
-  //   strIngredient1: 'Gin',
-  //   strIngredient2: 'Tonic',
-  //   strIngredient3: 'Ing3',
-  //   strIngredient4: 'Ing4',
-  //   strIngredient5: 'Ing5',
-  // }
 
   const fetchCocktail = useCallback(async () => {
     try {

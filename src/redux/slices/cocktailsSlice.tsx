@@ -1,5 +1,5 @@
 import {
-  PayloadAction,
+  // PayloadAction,
   createAsyncThunk,
   createSelector,
   createSlice,
@@ -88,12 +88,12 @@ const cocktailSlice = createSlice({
       state.filteredCocktailByIngredients = action.payload
     },
   },
-  extraReducers(builder) {
-    builder.addCase(getRandomCocktail.fulfilled, (state, action) => {
-      const payload = action.payload
-      // TODO: Update state according to payload
-    })
-  },
+  // extraReducers(builder) {
+  //   builder.addCase(getRandomCocktail.fulfilled, (state, action) => {
+  //     const payload = action.payload
+  //     // TODO: Update state according to payload
+  //   })
+  // },
 })
 
 // Export reducer

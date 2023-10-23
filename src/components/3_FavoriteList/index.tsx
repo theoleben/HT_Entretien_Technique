@@ -1,30 +1,16 @@
-import { FC /*useEffect,*/, useState } from 'react'
+import { FC, useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
-// import { Cocktail } from '../../types/cocktails'
-// import CocktailCard from '../CocktailCard'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
   cocktailRemoved,
   selectAllCocktails,
-  // selectAllIngredientsFavCocktails,
   selectAllIngredients,
 } from '../../redux/slices/cocktailsSlice'
-// import { Cocktails } from '../../types/cocktails'
 
-// Useless because we can retrieve redux data directly in this component
-// interface IProps {
-//   cocktails?: Array<Cocktail>
-// }
-
-// const FavoriteList: FC<IProps> = ({ cocktails }) => {
 const FavoriteList: FC = () => {
   const dispatch = useAppDispatch()
   const [ingredientsFavList, setIngredientsFavList] = useState<string[]>([])
-
-  // console.log(cocktails)
-
   const cocktailsList = useAppSelector(selectAllCocktails)
-  // const ingredientsList = useAppSelector(selectAllIngredientsFavCocktails)
   const ingredientsList = useAppSelector(selectAllIngredients)
   // console.log(cocktailsList)
   // console.log(ingredientsList)

@@ -12,7 +12,7 @@ const CocktailCard: FC<IProps> = ({ cocktail }) => {
   const dispatch = useAppDispatch()
   // console.log(cocktail)
 
-  let fruits: string[] = [
+  let ingredients: string[] = [
     cocktail.strIngredient1,
     cocktail.strIngredient2,
     cocktail.strIngredient3,
@@ -27,10 +27,7 @@ const CocktailCard: FC<IProps> = ({ cocktail }) => {
           <Typography variant="h5">{cocktail.strDrink}</Typography>
           <Typography variant="h5">Ingrédients:</Typography>
           {/* TODO: Fill ingredients here */}
-          {/* {cocktail.strIngredient1}
-          {cocktail.strIngredient2} */}
-
-          {fruits.map((element, index) => {
+          {ingredients.map((element, index) => {
             return <p key={index}>{element}</p>
           })}
 
