@@ -6,7 +6,7 @@ import {
 import {
   Button,
   Card,
-  Checkbox,
+  // Checkbox,
   FormControlLabel,
   FormGroup,
   Stack,
@@ -39,6 +39,8 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
   const [filter, setFilter] = useState<string>()
   // const [results, setResults] = useState<Array<{ name: string; img: string }>>()
   const [results, setResults] = useState<Array<CocktailAlcohol>>([])
+  const [selectedIngredientValue, setSelectedIngredientValue] =
+    useState<string>('')
   const [selectedValue, setSelectedValue] = useState<string>('')
 
   const filteredCocktails = useAppSelector(selectAllFilteredCocktails)
@@ -168,24 +170,34 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
 
   // console.log(results)
 
-  const handleCheck = (
-    _event: React.SyntheticEvent<Element, Event>,
-    ingredient: string,
-    checked: boolean,
-  ) => {
-    // console.log(event.target)
-    // console.log(ingredient)
+  // const handleCheck = (
+  //   _event: React.SyntheticEvent<Element, Event>,
+  //   ingredient: string,
+  //   checked: boolean,
+  // ) => {
+  //   // console.log(event.target)
+  //   // console.log(ingredient)
 
-    if (checked) {
-      // console.log(ingredient)
-      setFilter(ingredient)
-    } else {
-      setFilter(undefined)
-      setResults([])
-    }
+  //   if (checked) {
+  //     // console.log(ingredient)
+  //     setFilter(ingredient)
+  //   } else {
+  //     setFilter(undefined)
+  //     setResults([])
+  //   }
+  // }
+
+  const handleIngredientsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.value)
+    setSelectedIngredientValue(event.target.value)
+    setFilter(event.target.value)
+
+    // Reset all previous results
+    setResults([])
+    dispatch(cocktailFilteredByIngredients([]))
   }
 
-  const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value)
     setSelectedValue(event.target.value)
     // console.log('filteredCocktails in handle:', filteredCocktails)
@@ -228,7 +240,7 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
       <Stack direction={'row'} alignItems="flex-start" spacing={2}>
         <Card style={{ padding: '10px', maxHeight: '300px', overflow: 'auto' }}>
           <Typography variant="h6">Sélectionnez un ingrédient</Typography>
-          <FormGroup>
+          {/* <FormGroup>
             {ingredients &&
               ingredients.map((ingredient) => {
                 return (
@@ -246,6 +258,26 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
                   />
                 )
               })}
+          </FormGroup> */}
+          <FormGroup>
+            <RadioGroup
+              aria-label="options"
+              name="options"
+              value={selectedIngredientValue}
+              onChange={handleIngredientsChange}
+            >
+              {ingredients &&
+                ingredients.map((ingredient) => {
+                  return (
+                    <FormControlLabel
+                      key={ingredient}
+                      value={ingredient}
+                      control={<Radio />}
+                      label={ingredient}
+                    />
+                  )
+                })}
+            </RadioGroup>
           </FormGroup>
         </Card>
         <Card style={{ padding: '10px', maxHeight: '300px', overflow: 'auto' }}>
@@ -255,7 +287,7 @@ const FindCocktail: FC<IProps> = ({ ingredients }) => {
               aria-label="options"
               name="options"
               value={selectedValue}
-              onChange={handleRadioChange}
+              onChange={handleFilterChange}
             >
               <FormControlLabel
                 value="option_with_alcohol"

@@ -73,7 +73,13 @@ Ajouter une option pour trier selon les cocktails avec ou sans alcool (N.B: L'AP
 ![image](./screenshots/2-FormulaireCocktail_option_alcool.png)
 
 **Questions bonus:**
-* Avez vous des idées pour améliorer cette API ?
-* Voyez vous des idées d'amélioration de l'architecture du projet ?
-* Voyez vous des idées pour optimiser le projet ?
+* Avez vous des idées pour améliorer cette API ?  
+
+*L'API pourrait proposer une route permettant de filtrer les cocktails en fonction: des cocktails officiels de l'IBA (strIBA), des types de verre à utiliser (strGlass), des tags associés au cocktails (strTags) (ce critère semble très subjectif)*
+* Voyez vous des idées d'amélioration de l'architecture du projet ?  
+
+*Mise en place de hooks personnalisés pour centraliser l'ensemble des calls API à effectuer;Mise en place/utilisation de plus de types/interfaces pour avoir une idée plus générale des données à récupérer et à manipuler*
+* Voyez vous des idées pour optimiser le projet ?  
+
+*Parcourir l'ensemble des hooks liés à l'optimisation useCallback, useMemo, React.memo pour voir s'il y a une utilité dans le projet*
 
